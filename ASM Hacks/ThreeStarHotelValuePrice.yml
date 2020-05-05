@@ -1,0 +1,55 @@
+# ---------------------------------------------------------
+# ----------------- 3* Star Hotel Price Change ------------
+# ---------------------------------------------------------
+#
+# -------------- Things you may want to modify -----------------
+definitions: 
+ - &three_star_hotel_cost 500
+ - &three_star_hotel_price 100
+# ----------- Things that should not be modified ----------------
+ - &original_three_star_hotel_cost 1000
+ - &original_three_star_hotel_price 200
+---
+ group: Original
+ patchAddress:   8a532
+ valueType:      BE_Short
+ originalValue:  *original_three_star_hotel_price
+ patchValue:     *three_star_hotel_price
+---
+ group: Original
+ checkAddress:   8a520
+ checkBytes:     9B FD 00 52 40 82 00 80 80 9D 00 20 38 60
+ patchAddress:   8a52e
+ valueType:      BE_Short
+ originalValue:  *original_three_star_hotel_cost
+ patchValue:     *three_star_hotel_cost
+---
+ group: Original
+ patchAddress:   e60da
+ valueType:      BE_Short
+ originalValue:  *original_three_star_hotel_cost
+ patchValue:     *three_star_hotel_cost
+---
+ group: Original
+ patchAddress:   f7e82
+ valueType:      BE_Short
+ originalValue:  *original_three_star_hotel_cost
+ patchValue:     *three_star_hotel_cost
+---
+ group: Original
+ patchAddress:   1582d6
+ valueType:      BE_Short
+ originalValue:  *original_three_star_hotel_cost
+ patchValue:     *three_star_hotel_cost
+---
+ group: Original
+ patchAddress:   15c282
+ valueType:      BE_Short
+ originalValue:  *original_three_star_hotel_cost
+ patchValue:     *three_star_hotel_cost
+---
+ group: Original
+ patchAddress:   40dc94
+ valueType:      BE_Integer
+ originalValue:  *original_three_star_hotel_cost
+ patchValue:     *three_star_hotel_cost

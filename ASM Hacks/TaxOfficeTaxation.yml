@@ -1,0 +1,15 @@
+# ---------------------------------------------------------
+# ----------------- Tax Office Change ------------
+# ---------------------------------------------------------
+#
+# 5% instead of 10% price for other players
+#
+# ----------- Things that should not be modified ----------------
+---
+ group: Original
+ checkAddress:   8adba
+ checkBytes:     00 00 40 81 00 78 3C 60 66 66 80 BF 00 20 38 03 66 67 7C 00 20 96 2C 05 00 00
+ patchAddress:   8add4
+ originalBytes:  7C 00 16 70
+ patchBytes:     7c 00 1e 70
+---

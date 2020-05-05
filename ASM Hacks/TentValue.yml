@@ -1,0 +1,81 @@
+# ---------------------------------------------------------
+# ----------------- Tent Value Price Change ------------
+# ---------------------------------------------------------
+#
+# -------------- Things you may want to modify -----------------
+definitions: 
+ - &tent_value_increase 100
+ - &tent_value_level_1_price 100
+ - &tent_value_level_2_price 400
+ - &tent_value_level_3_price 1200
+ - &tent_value_level_4_price 2400
+# ----------- Things that should not be modified ----------------
+ - &original_tent_value_increase 100
+ - &original_tent_value_level_1_price 100
+ - &original_tent_value_level_2_price 500
+ - &original_tent_value_level_3_price 1000
+ - &original_tent_value_level_4_price 2000
+---
+ group: Original
+ checkAddress:   89e42
+ checkBytes:     07 74 2C 05 00 32 40 82 00 4C 2C 04 00 00 40 81 00 08 48 00 00 08 80 83 00 30
+ patchAddress:   89e5e
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_4_price
+ patchValue:     *tent_value_level_4_price
+---
+ group: Original
+ patchAddress:   89e6e
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_3_price
+ patchValue:     *tent_value_level_3_price
+---
+ group: Original
+ patchAddress:   89e82
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_2_price
+ patchValue:     *tent_value_level_2_price
+---
+ group: Original
+ checkAddress:   8b9b6
+ checkBytes:     EE 8C 4E 80 00 20 A8 83 00 4A 38 04 00 01 B0 03 00 4A 4E 80 00 20 80 03 00 30
+ patchAddress:   8b9d2
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_1_price
+ patchValue:     *tent_value_level_1_price
+---
+ group: Original
+ patchAddress:   8b9da
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_2_price
+ patchValue:     *tent_value_level_2_price
+---
+ group: Original
+ patchAddress:   8b9e6
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_2_price
+ patchValue:     *tent_value_level_2_price
+---
+ group: Original
+ patchAddress:   8b9ee
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_3_price
+ patchValue:     *tent_value_level_3_price
+---
+ group: Original
+ patchAddress:   8b9fa
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_3_price
+ patchValue:     *tent_value_level_3_price
+---
+ group: Original
+ patchAddress:   8ba02
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_level_4_price
+ patchValue:     *tent_value_level_4_price
+---
+ group: Original
+ patchAddress:   0008ba0e
+ valueType:      BE_Short
+ originalValue:  *original_tent_value_increase
+ patchValue:     *tent_value_increase

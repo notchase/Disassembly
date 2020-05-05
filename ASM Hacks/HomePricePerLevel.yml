@@ -1,0 +1,17 @@
+# ----------------------------------------------------
+# --------------- Price per Level at Home --------------
+# ----------------------------------------------------
+#
+# -------------- Things you may want to modify -----------------
+definitions: 
+ - &price_per_level 100
+# ----------- Things that should not be modified ----------------
+ - &original_price_per_level 30
+---
+ group: Original
+ checkAddress:   8ae6c
+ checkBytes:     7C 63 02 14 2C 05 00 00 80 63 33 A0 38 03 00 01 1C 80
+ patchAddress:   8ae7e
+ valueType:      BE_Short
+ originalValue:  *original_price_per_level
+ patchValue:     *price_per_level

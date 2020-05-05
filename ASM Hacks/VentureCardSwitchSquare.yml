@@ -1,0 +1,220 @@
+# ---------------------------------------------------------
+# ------------------ Venture Card Switch ------------------
+# ---------------------------------------------------------
+# Makes the square with type 2D act like a switch which triggers a venture card.
+# The district number of the square decides which venture card to trigger.
+# As such, the district number can be any value between 0 and 128. 
+# It should not be 0 as this can trigger a crash.
+#
+# Requires the EstateAgencyAndBroker.yml patch to be applied or will crash otherwise.
+#
+# ----------- Things that should not be modified ----------------
+--- # handleSquare 2E -> customVentureCardHandler
+ group: Original
+ checkAddress:   4718e5
+ checkBytes:     0F AB CC 80 0F AC 20 80 0F AC 04 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20
+ patchAddress:   471918
+ originalBytes:  80 0F AC 20
+ patchBytes:     80 0F EA DC
+--- # customVentureCardHandler()
+ group: Original
+ checkAddress:   f9e70
+ checkBytes:     38 00 08 15 90 1B 00 28 48 00 03 00
+ patchAddress:   f9e7c
+ originalBytes:  |
+  38 00 00 01 
+  98 1F 00 40 
+  38 00 00 00 
+  3F 40 80 41 
+  3B 5A 75 70 
+  90 01 00 34 
+  7F 43 D3 78 
+  3B 21 00 34 
+  90 01 00 38 
+  90 01 00 3C 
+  48 20 C3 8D 
+  7C 78 1B 78 
+  7F 23 CB 78 
+  7F 04 C3 78 
+  4B F0 C8 E5 
+  88 01 00 0C 
+  7F 23 CB 78 
+  98 01 00 08 
+  7F 46 D3 78 
+  7C FA C2 14 
+ patchBytes:     |
+  80 7c 01 88    # lwz        r3,0x188(r28)
+  80 63 00 74    # lwz        r3,0x74(r3)
+  88 c3 00 18    # lbz        r6,0x18(r3)
+  80 74 00 18    # lwz        r3,0x18(r20)
+  90 c3 00 18    # stw        r6,0x18(r3)
+  38 80 00 1d    # li         r4,0x1d
+  38 a0 ff ff    # li         r5,-0x1
+  38 c0 ff ff    # li         r6,-0x1
+  38 e0 00 00    # li         r7,0x0
+  4b fc 1e 3d    # bl         popupMessageEventHandler
+  60 00 00 00    # ori        r0,r0,0x0
+  3c 60 80 0f    # lis        r3,0xFFFF800F
+  60 63 ac 38    # ori        r3,r3,0xac38
+  7c 69 03 a6    # mtspr      CTR,r3
+  4e 80 04 20*   # bctr
+--- # change model to switch
+ group: Original
+ checkAddress:   4718e5
+ checkBytes:     0F AB CC 80 0F AC 20 80 0F AC 04 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20 80 0F AC 20
+ patchAddress:   44f410
+ originalBytes:  80 08 81 00
+ patchBytes:     80 08 80 60
+--- # jump to customTextureHandler
+ group: Original
+ checkAddress:   82108
+ checkBytes:     90 7a 00 28 c0 02 88 80 93 fa 00 dc 93 fa 00 e0 93 fa 00 e4 93 fa 00 e8 d0 1a 00 ec d0 1a 00 f0 93 fa 00 f4 4b fc cf 19 4b fe 17 85 89 dd 00 4d
+ patchAddress:   82138
+ originalBytes:  39 E0 00 01    # li r15,0x1
+ patchBytes:     48 07 7d c9    # bl FUN_800feb60
+--- # customTextureHandler()
+ group: Original
+ patchAddress:   f9f00
+ originalBytes:  |
+  39 00 00 00
+  90 01 00 9C
+  90 01 00 A0
+  90 01 00 A4
+  90 01 00 A8
+  90 01 00 AC
+ patchBytes:     |
+  39 e0 00 01    # li         modelType,0x1
+  28 8e 00 2e    # cmplwi     cr1,r14,0x2e
+  41 86 00 08    # beq        cr1,LAB_800feb70
+  4e 80 00 20    # blr
+  39 e0 00 11    # li         r15,0x11 (0x11 = stone texture)
+  4e 80 00 20    # blr
+--- # jump to customTextureHandler2
+ group: Original
+ checkAddress:   82daa
+ checkBytes:     88 80 D0 1D 00 EC D0 1D 00 F0 92 3D 00 F4 4B FC C2 8D 4B FE 0A F9 28 9E 00 23
+ patchAddress:   82dc4
+ originalBytes:  3B E0 00 01    # li r31,0x1
+ patchBytes:     48 07 71 75    # bl FUN_800feb98
+--- # customTextureHandler2()
+ group: Original
+ patchAddress:   f9f38
+ originalBytes:  |
+  90 01 00 D0
+  90 01 00 D4
+  90 01 00 D8
+  90 01 00 DC
+  4B FF 8D 35
+  7F 63 DB 78
+ patchBytes:     |
+  3b e0 00 01    # li         modelType,0x1
+  28 9e 00 2E    # cmplwi     cr1,r30,0x2e
+  41 86 00 08    # beq        cr1,LAB_800feba8
+  4e 80 00 20    # blr
+  3b e0 00 11    # li         r31,0x11  (0x11 = stone texture)
+  4e 80 00 20    # blr
+# 4 = venture card texture
+# 6 = yellow texture
+# 9 = blue texture
+# f = brown texture
+# 17 = stone texture
+--- # square 2E title text number
+ group: Original
+ patchAddress:   471660
+ originalBytes:  FF FF FF FF
+ valueType:      BE_Integer
+ patchValue:     3336       # title text -> 0xD08 = "Switch square"
+--- # jump to handleCustomSquareIcon
+ group: Original
+ checkAddress:   df406
+ checkBytes:     FF E4 3F 20 80 41 3B 40 00 00 3B 39 5F 58
+ patchAddress:   df414
+ originalBytes:  7C 1A E8 00    # cmpw       r26,r29
+ patchBytes:     48 01 AA 31    # bl handleCustomSquareIcon
+#     800e4074 7c 1a e8 00     cmpw       r26,r29
+--- # handleCustomSquareIcon()
+ group: Original
+ patchAddress:   F9E44
+ originalBytes:  |
+  2C 00 00 01 
+  40 82 FF EC 
+  7F 63 DB 78 
+  7F 84 E3 78 
+  38 A0 00 7E 
+  38 C0 FF FF
+ patchBytes:     |
+  2c 1d 00 2e    # cmpwi      r29,0x2e
+  41 82 00 0c    # beq        LAB_800feab4
+  7c 1a e8 00    # cmpw       r26,r29
+  4e 80 00 20    # blr
+  2c 1a 00 12    # cmpwi      r26,0x12  # icon -> 0x12 = Switch icon
+  4e 80 00 20    # blr
+--- # call rememberSquareDataPointerIn_r23
+ group: Original
+ patchAddress:   df1a0
+ checkBytes:     4E 80 00 20 94 21 FF 80 7C 08 02 A6 90 01 00 84 39 61 00
+ patchAddress:   DF1B4
+ originalBytes:  48 22 76 75
+ patchBytes:     48 01 ac a9
+--- # rememberSquareDataPointerIn_r23()
+ group: Original
+ patchAddress:   F9E60
+ originalBytes:  48 0C E8 A1 38 00 08 12 90 1B 00 28
+ patchBytes:     |
+  7c 7c 1b 78    # or         r28,param_1,param_1
+  7f 77 db 78    # or         r23,r27,r27
+  4e 80 00 20    # blr
+--- # call getDescriptionOfVentureCardForCustomSquareField
+ group: Original
+ patchAddress:   f40b8
+ checkBytes:     83 A1 01 00 38 E0 00 00 83 81 01 04
+ patchAddress:   f40c4
+ originalBytes:  39 00 00 00
+ patchBytes:     42 80 5e bd
+--- # get return value of getDescriptionOfVentureCardForCustomSquareField
+ group: Original
+ patchAddress:   f40c8
+ checkBytes:     83 61 01 08 81 81 01 0c 81 61 01 10 81 41 01 14 81 21 01 18 80 01 01 1c 90 81 00 a8
+ patchAddress:   f40e4
+ originalBytes:  80 9F 00 04
+ patchBytes:     7e e4 bb 78
+--- # getDescriptionOfVentureCardForCustomSquareField()
+ group: Original
+ patchAddress:   f9f80
+ originalBytes:  |
+  4B F0 99 41
+  80 01 00 34
+  54 00 0F FF
+  41 82 00 0C
+  80 61 00 3C
+  4B F0 99 2D
+  38 00 FF FF
+  90 01 00 68 
+  38 61 00 1C 
+  38 A1 00 B8 
+  90 01 00 6C 
+  38 80 0A DA 
+  38 C0 00 00 
+  38 E0 00 00 
+  90 01 00 70 
+  39 00 00 00 
+  90 01 00 74 
+  90 01 00 78 
+  90 01 00 7C*
+ patchBytes:     |
+  89 17 00 4d    # lbz        r8,squareData_r23->squareType(r23)
+  2c 08 00 2e    # cmpwi      r8,0x2e
+  41 82 00 0c    # beq        LAB_800febf4
+  82 ff 00 04    # lwz        r23,0x4(r31)
+  42 80 00 1c    # b          LAB_800fec0c
+  89 17 00 18    # lbz        r8,0x18(r23)
+  39 08 ff ff    # subi       r8,r8,0x1
+  55 08 10 3a    # rlwinm     r8,r8,0x2,0x0,0x1d
+  3c e0 80 41    # lis        r7,-0x7fbf
+  38 e7 72 60    # addi       r7,r7,0x7260
+  7e e7 40 2e    # lwzx       r23,r7,r8
+  38 c0 00 00    # li         r6,0x0
+  38 e0 00 00    # li         r7,0x0
+  39 00 00 00    # li         r8,0x0
+  4e 80 00 20    # blr
+---
